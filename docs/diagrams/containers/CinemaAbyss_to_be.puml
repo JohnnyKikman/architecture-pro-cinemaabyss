@@ -1,0 +1,42 @@
+@startuml
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/refs/heads/master/C4_Container.puml
+
+Person(user, "Пользователь")
+System_Boundary(cinemaAbyss, "Система «Кинобездна»") {
+    Container(proxy, "API proxy", "Маршрутизация запросов между монолитом и микросервисами")
+
+    Container(payments, "Сервис платежей", "Выставление и оплата счетов")
+    Container(subscriptions, "Сервис подписок", "Управление подписками")
+    Container(movies, "Сервис фильмов", "Метаданные, рейтинги, жанры")
+    Container(users, "Сервис пользователей", "Пользователи, социальный граф")
+    Container(streaming, "Сервис видео", "Стриминг фильмов клиентам")
+
+    Container(events, "Оркестратор", "Получение и рассылка событий")
+}
+System_Ext(recommendationSystem, "Рекомендательная система")
+System_Ext(videoSource, "Внешние источники видео")
+System_Ext(paymentSystem, "Платежная система")
+
+Rel_D(user, proxy, "Отправляет запросы")
+
+Rel_L(proxy, payments, "Производит оплату", "REST API")
+Rel_D(proxy, users, "Получает данные о пользователях", "REST API")
+Rel_D(proxy, movies, "Получает данные о фильмах", "REST API")
+Rel_D(proxy, subscriptions, "Получает данные о подписках", "REST API")
+Rel_R(proxy, streaming, "Запрашивает видео", "RTSP")
+
+Rel_L(payments, paymentSystem, "Производит оплату", "REST API")
+Rel(payments, events, "События об оплатах, просрочках оплаты", "Kafka")
+
+Rel(subscriptions, events, "События об изменении подписки", "Kafka")
+
+Rel_D(movies, recommendationSystem, "Запрашивает рекомендации", "RabbitMQ")
+Rel(movies, events, "События об изменении базы фильмов", "Kafka")
+Rel(movies, streaming, "Запрашивает источники фильмов", "REST API")
+
+Rel(users, events, "События об изменениях пользователя", "Kafka")
+
+Rel_R(streaming, videoSource, "Получает видео", "RTSP")
+
+@enduml
