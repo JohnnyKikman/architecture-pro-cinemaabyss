@@ -3,4 +3,4 @@ spring:
     name: proxy
 
 server:
-  port: 8000
+  port: ${PORT}
