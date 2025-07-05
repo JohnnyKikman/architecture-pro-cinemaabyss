@@ -36,11 +36,10 @@ public class RouterConfiguration {
                                     .and()
                                     .weight("moviesGroup", migrationPercent)
                                     .uri(moviesUrl))
-                    .route("users", p ->
-                            p.path("/api/users/**")
-                                    .uri(monolithUrl))
-                    .route("health", p ->
-                            p.path("/health")
+                    .route("default", p ->
+                            p.path("/api/**")
+                                    .and()
+                                    .not(pp -> pp.path("**/movies/**"))
                                     .uri(monolithUrl))
                     .build();
         } else {
