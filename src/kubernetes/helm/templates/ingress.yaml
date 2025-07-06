@@ -25,9 +25,9 @@ spec:
         pathType: {{ .pathType }}
         backend:
           service:
-            name: {{ .service }}
+            name: {{ .backend.service.name }}
             port:
-              number: {{ .port }}
+              number: {{ .backend.service.port.number }}
       {{- end }}
   {{- end }}
 {{- end }}

@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: events
+  kafka:
+    bootstrap-servers: ${KAFKA_BROKERS}
+    consumer:
+      group-id: cinemaabyss-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: ru.cinemaabyss.events.dto
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    template:
+      default-topic: movie-events
+
+server:
+  port: ${PORT}
